@@ -29,6 +29,7 @@ log = "0.4"
 env_logger = "0.11"
 tokio-util = { version = "0.7", features = ["codec"] }
 dotenvy = "0.15"
+regex = "1.10"
 
 [target.'cfg(windows)'.dependencies]
 windows-sys = { version = "0.52", features = [

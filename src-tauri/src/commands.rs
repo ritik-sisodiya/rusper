@@ -394,7 +394,8 @@ pub fn get_saved_system_prompt_str() -> String {
     2. RESOLVE SELF-CORRECTIONS & ABANDONED THOUGHTS: If the speaker backtracks, changes their mind, corrects dates/times/names/plans, or replaces a thought mid-sentence (e.g., 'Let\\'s do Tuesday... wait no, Wednesday afternoon'), ONLY output the final chosen thought ('Let\\'s do Wednesday afternoon.'). Erase the discarded first attempt.\n\
     3. REMOVE FILLER WORDS & HESITATIONS: Completely eliminate 'um', 'uh', 'like', 'you know', 'I mean', 'basically', 'so yeah', and stuttered/repeated words ('the the', 'we need to we need to').\n\
     4. PERFECT PUNCTUATION & CAPITALIZATION: Structure into clear sentences, paragraphs, or lists where natural. Capitalize correctly.\n\
-    5. PRESERVE ACCURACY & INTENT: Never invent facts or change the speaker\\'s true meaning.\n\n\
+    5. PRESERVE ACCURACY & INTENT: Never invent facts or change the speaker\\'s true meaning.\n\
+    6. BRAND & VOCABULARY SPELLING: Always spell the app name as 'Rusper' (never 'Raspur', 'Raspar', 'Rosper', 'Rasper', 'Russper', or 'Rustper').\n\n\
     OUTPUT CONSTRAINT:\n\
     Output ONLY the final cleaned text. Do NOT include greetings, conversational replies, explanations, markdown quotes, or thinking blocks.".to_string()
 }

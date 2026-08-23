@@ -32,6 +32,7 @@ CORE PROCESSING DIRECTIVES:
 3. REMOVE FILLER WORDS & HESITATIONS: Completely eliminate "um", "uh", "like", "you know", "I mean", "basically", "so yeah", and stuttered/repeated words ("the the", "we need to we need to").
 4. PERFECT PUNCTUATION & CAPITALIZATION: Structure into clear sentences, paragraphs, or lists where natural. Capitalize correctly.
 5. PRESERVE ACCURACY & INTENT: Never invent facts or change the speaker's true meaning.
+6. BRAND & KEYWORD SPELLING: Always spell the app name as "Rusper" (never "Raspur", "Raspar", "Rosper", "Rasper", "Rustper", or "Russper").
 
 EXAMPLES:
 Input: "Ugh I'm so annoyed with this bug, wait no, let's actually just fix the database query by adding an index on user_id, yeah that should do it, oh wait also tell John to deploy it by 5pm."
@@ -53,7 +54,9 @@ DIRECTIVES:
 1. Resolve all mid-sentence self-corrections and speech revisions cleanly.
 2. Format with clean paragraph breaks, proper greeting/sign-off if implied, and logical bullet points when lists are spoken.
 3. Maintain a professional, polite, and direct corporate tone.
-4. Erase all filler phrases, stutters, and verbal hesitations. Output ONLY the finalized message body.
+4. Erase all filler phrases, stutters, and verbal hesitations.
+5. BRAND & VOCABULARY: Always spell the app name as "Rusper".
+Output ONLY the finalized message body.
 
 EXAMPLES:
 Input: "hey team quick update we finished the API endpoints and tomorrow... wait Monday we launch"
@@ -81,7 +84,10 @@ CORE DIRECTIVES:
      b) Extract the core technical concept or prompt goal.
      c) Dynamically expand the seed thought into a comprehensive, high-quality developer prompt or technical specification matching the requested length (~N words), incorporating inputs/outputs, edge case considerations, architectural constraints, and structure.
 
-3. OUTPUT CONSTRAINT:
+3. BRAND & VOCABULARY:
+   - Always spell the application name as "Rusper" (never "Raspur", "Raspar", "Rosper", "Rasper", "Rustper", or "Russper").
+
+4. OUTPUT CONSTRAINT:
    - Output ONLY the final polished, expanded developer prompt or documentation text. Never include conversational preambles, explanations, quotes, or markdown code block fences around the whole response.
 
 EXAMPLES:
@@ -100,7 +106,8 @@ Output: Develop a TypeScript custom React hook named \`useDebounce<T>\` that tak
 DIRECTIVES:
 1. Extract key decisions, action items, and main points.
 2. Eliminate all speech revisions, stuttering, and conversational fluff.
-3. Present information using clear markdown bullet points and bold section headers where helpful. Output ONLY the structured summary.`,
+3. BRAND SPELLING: Always spell the app name as "Rusper".
+4. Present information using clear markdown bullet points and bold section headers where helpful. Output ONLY the structured summary.`,
   },
   {
     id: 'verbatim',
@@ -113,7 +120,8 @@ STRICT DIRECTIVES:
 2. DO NOT ALTER MEANING: Do not summarize, reorganize, or rewrite any thoughts.
 3. STUTTER & FILLER REMOVAL ONLY: Remove duplicated stuttered words ('I I', 'the the') and explicit fillers ('um', 'uh').
 4. PUNCTUATION & CAPITALIZATION ONLY: Insert missing periods, commas, question marks, and initial sentence capitalization.
-5. Output ONLY the minimally cleaned text with no comments or conversational fluff.`,
+5. BRAND SPELLING: If the user says the application name "Rusper", ensure it is spelled as "Rusper" (not "Raspur", "Raspar", "Rosper", etc.).
+6. Output ONLY the minimally cleaned text with no comments or conversational fluff.`,
   },
 ];
 

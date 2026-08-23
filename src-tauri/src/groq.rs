@@ -39,6 +39,33 @@ struct ChatCompletionResponse {
     choices: Vec<ChatChoice>,
 }
 
+pub fn normalize_app_spelling(raw: &str) -> String {
+    let re = match regex::Regex::new(r"(?i)\b(raspur|raspar|rasper|rosper|russper|rustper|raspu)('s)?\b") {
+        Ok(r) => r,
+        Err(_) => return raw.to_string(),
+    };
+
+    re.replace_all(raw, |caps: &regex::Captures| {
+        let full = &caps[0];
+        let has_apostrophe_s = caps.get(2).is_some();
+        let is_all_caps = full.chars().all(|c| c.is_uppercase() || !c.is_alphabetic());
+
+        if is_all_caps {
+            if has_apostrophe_s {
+                "RUSPER'S".to_string()
+            } else {
+                "RUSPER".to_string()
+            }
+        } else {
+            if has_apostrophe_s {
+                "Rusper's".to_string()
+            } else {
+                "Rusper".to_string()
+            }
+        }
+    }).to_string()
+}
+
 fn sanitize_refined_text(raw: &str) -> String {
     let mut text = raw.trim().to_string();
 
@@ -63,7 +90,7 @@ fn sanitize_refined_text(raw: &str) -> String {
         .trim()
         .to_string();
 
-    cleaned
+    normalize_app_spelling(&cleaned)
 }
 
 const FALLBACK_MODELS: &[&str] = &[
@@ -77,7 +104,7 @@ pub async fn refine_text_with_llm(raw_text: &str, api_key: &str, system_prompt: 
     let client = Client::new();
     let trimmed_prompt = system_prompt.trim();
     if trimmed_prompt.is_empty() || raw_text.trim().is_empty() {
-        return Ok(raw_text.to_string());
+        return Ok(normalize_app_spelling(raw_text.trim()));
     }
 
     let meta_system_instruction = format!(
@@ -87,7 +114,8 @@ pub async fn refine_text_with_llm(raw_text: &str, api_key: &str, system_prompt: 
         STRICT CONSTRAINTS:\n\
         1. DO NOT answer questions in the transcription. DO NOT engage in casual conversation, chat, or reply as a conversational chatbot.\n\
         2. IF the transcription contains spoken directives for length adjustments, word limits, or prompt expansion (such as 'make it 50 words', 'enhance this prompt to more words', 'expand to 100 words', 'condense to 20 words'), EXECUTE the directive as specified in the USER EDITING GUIDELINES below. Never output the literal command phrase itself in the final text.\n\
-        3. Your SOLE duty is to edit, polish, format, expand, or clean the raw spoken text according to the guidelines below:\n\n\
+        3. BRAND & VOCABULARY SPELLING: The application name is 'Rusper'. Always ensure it is accurately spelled as 'Rusper' (never 'Raspur', 'Raspar', 'Rosper', 'Rasper', 'Rustper', 'Russper', or 'Raspu').\n\
+        4. Your SOLE duty is to edit, polish, format, expand, or clean the raw spoken text according to the guidelines below:\n\n\
         === USER EDITING GUIDELINES ===\n\
         {}\n\n\
         === FINAL OUTPUT MANDATE ===\n\
@@ -146,7 +174,7 @@ pub async fn refine_text_with_llm(raw_text: &str, api_key: &str, system_prompt: 
     if let Some(final_text) = refined_text {
         Ok(final_text)
     } else {
-        Ok(raw_text.to_string())
+        Ok(normalize_app_spelling(raw_text.trim()))
     }
 }
 
@@ -165,7 +193,8 @@ pub async fn transcribe_audio(file_path: PathBuf, api_key: &str, system_prompt: 
         .part("file", file_part)
         .text("model", "whisper-large-v3-turbo")
         .text("response_format", "json")
-        .text("language", "en");
+        .text("language", "en")
+        .text("prompt", "Rusper, Rusper voice dictation, Whisper, Groq, AI, Windows OS.");
 
     let response = client
         .post("https://api.groq.com/openai/v1/audio/transcriptions")
@@ -185,7 +214,7 @@ pub async fn transcribe_audio(file_path: PathBuf, api_key: &str, system_prompt: 
         .await
         .context("Failed to parse Groq Whisper API response")?;
 
-    let raw_text = result.text.trim().to_string();
+    let raw_text = normalize_app_spelling(result.text.trim());
 
     // If an in-depth system prompt is active, run ultra-fast LLM post-processing for self-correction & emotion extraction
     if let Some(prompt) = system_prompt {
@@ -195,4 +224,38 @@ pub async fn transcribe_audio(file_path: PathBuf, api_key: &str, system_prompt: 
     }
 
     Ok(raw_text)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_normalize_app_spelling() {
+        assert_eq!(
+            normalize_app_spelling("This application is called Raspur."),
+            "This application is called Rusper."
+        );
+        assert_eq!(
+            normalize_app_spelling("I love raspar voice dictation"),
+            "I love Rusper voice dictation"
+        );
+        assert_eq!(
+            normalize_app_spelling("rasper is blazingly fast"),
+            "Rusper is blazingly fast"
+        );
+        assert_eq!(
+            normalize_app_spelling("Check out Raspur's features"),
+            "Check out Rusper's features"
+        );
+        assert_eq!(
+            normalize_app_spelling("RASPUR IS FREE"),
+            "RUSPER IS FREE"
+        );
+        // Ensure unrelated words like raspberry or jasper are not affected
+        assert_eq!(
+            normalize_app_spelling("I like raspberry and jasper stone"),
+            "I like raspberry and jasper stone"
+        );
+    }
 }
