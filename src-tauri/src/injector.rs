@@ -205,7 +205,7 @@ pub fn copy_and_inject_text(text: &str) -> Result<(), String> {
         let modifier = Key::Control;
 
         let _ = enigo.key(modifier, Direction::Press);
-        let _ = enigo.key(Key::V, Direction::Click);
+        let _ = enigo.key(Key::Unicode('v'), Direction::Click);
         let _ = enigo.key(modifier, Direction::Release);
     }
 
