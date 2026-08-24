@@ -660,7 +660,7 @@ pub async fn undo_last_injection() -> Result<(), String> {
             let modifier = Key::Control;
 
             let _ = enigo.key(modifier, Direction::Press);
-            let _ = enigo.key(Key::Z, Direction::Click);
+            let _ = enigo.key(Key::Unicode('z'), Direction::Click);
             let _ = enigo.key(modifier, Direction::Release);
         }
         Ok(())
